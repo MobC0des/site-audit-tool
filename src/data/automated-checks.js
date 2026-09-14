@@ -4,6 +4,7 @@ const samplePage = {
   title: 'Example Website',
   canonical: 'https://example.com',
   url: 'https://example.com',
+  performanceScore: 80,
   headings: [
     { level: 1, text: 'Welcome' },
     { level: 2, text: 'Services' },
@@ -11,3 +12,5 @@ const samplePage = {
 };
 
 export const automatedChecks = runPageAudit(samplePage);
+
+console.log(automatedChecks);

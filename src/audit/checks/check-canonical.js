@@ -1,4 +1,4 @@
-export function checkCanonical(canonical) {
+export function checkCanonical(canonical, url) {
   if (canonical.trim() === '') {
     return {
       id: 'canonical',
@@ -7,12 +7,20 @@ export function checkCanonical(canonical) {
       message: 'Canonical URL not found',
     };
   }
-  else {
+  else if (canonical === url) {
     return {
       id: 'canonical',
       name: 'Canonical URL',
       status: 'Passed',
-      message: 'Canonical URL found',
+      message: 'Canonical URL matches',
+    };
+  }
+  else {
+    return {
+      id: 'canonical',
+      name: 'Canonical URL',
+      status: 'Warning',
+      message: 'Canonical URL does not match the page URL',
     };
   }
 }
