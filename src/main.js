@@ -96,6 +96,7 @@ function render() {
           <!-- Header -->
           <header id="overview">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <a href="/contact"></a>
               <div>
                 <div class="flex items-center gap-3">
 

@@ -1,7 +1,7 @@
 export function getCheckStatusLabel(status) {
-  if (status === 'Pass') {
+  if (status === 'Passed') {
     return 'Passed';
-  } else if (status === 'Fail') {
+  } else if (status === 'Failed') {
     return 'Failed';
   } else if (status === 'Warning') {
     return 'Warning';
