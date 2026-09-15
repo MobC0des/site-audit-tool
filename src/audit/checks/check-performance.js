@@ -1,26 +1,33 @@
 export function checkPerformance(performanceScore) {
+  if (performanceScore === undefined) {
+    return {
+      id: 'performance',
+      name: 'Performance',
+      status: 'Warning',
+      message: 'Performance has not been measured yet',
+    };
+  }
+
   if (performanceScore >= 90) {
     return {
       id: 'performance',
       name: 'Performance',
       status: 'Passed',
       message: `Performance score is ${performanceScore}`,
-    }
-  }
-  else if (performanceScore >= 50) {
+    };
+  } else if (performanceScore >= 50) {
     return {
       id: 'performance',
       name: 'Performance',
       status: 'Warning',
       message: `Performance score is ${performanceScore}`,
-    }
-  }
-  else {
+    };
+  } else {
     return {
       id: 'performance',
       name: 'Performance',
       status: 'Failed',
       message: `Performance score is ${performanceScore}`,
-    }
+    };
   }
 }

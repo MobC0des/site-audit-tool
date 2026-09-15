@@ -1,19 +1,24 @@
-export function collectPageData(_page) {
+export function collectPageData() {
   const title = document.title;
   const url = window.location.href;
 
-  const canonicalElement = document.querySelector('link[rel="canonical"]');
+  const canonicalElement = document.querySelector(
+    'link[rel="canonical"]',
+  );
 
   let canonical = '';
+
   if (canonicalElement) {
     canonical = canonicalElement.href;
   }
 
-  const headingElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  const headingElements = document.querySelectorAll(
+    'h1, h2, h3, h4, h5, h6',
+  );
 
   const headings = [...headingElements].map((heading) => {
     return {
-      level: Number(heading.tagName.substring(1)),
+      tag: heading.tagName.toLowerCase(),
       text: heading.textContent.trim(),
     };
   });
@@ -30,10 +35,16 @@ export function collectPageData(_page) {
     };
   });
 
-  const robotsElement = document.querySelector('meta[name="robots"]');
-  const robots = robotsElement ? robotsElement.getAttribute('content') : '';
+  const robotsElement = document.querySelector(
+    'meta[name="robots"]',
+  );
+
+  const robots = robotsElement
+    ? robotsElement.getAttribute('content')
+    : '';
 
   const imageElements = document.querySelectorAll('img');
+
   const images = [...imageElements].map((img) => {
     return {
       src: img.getAttribute('src'),

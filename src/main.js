@@ -1,7 +1,5 @@
 import './style.css';
 
-import { collectPageData } from './audit/collectors/collect-page-data.js';
-import { runPageAudit } from './audit/run-page-audit.js';
 import { checks } from './data/checks.js';
 import { calculateProgress } from './utils/calculate-progress.js';
 import { getCheckStatusLabel } from './utils/get-check-status-label.js';
@@ -10,6 +8,8 @@ import { getLaunchStatus } from './utils/get-launch-status.js';
 const app = document.querySelector('#app');
 
 let automatedChecks = [];
+let isAuditing = false;
+let auditError = '';
 
 const project = {
   name: 'Northstar Growth Hub',
@@ -19,6 +19,38 @@ const project = {
 
 const PROJECT_STORAGE_KEY = 'launchcheck-project';
 const CHECKS_STORAGE_KEY = 'launchcheck-checks';
+
+async function fetchAudit(url) {
+  isAuditing = true;
+  auditError = '';
+
+  render();
+
+  try {
+    const response = await fetch(
+      `/api/audit?url=${encodeURIComponent(url)}`,
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Audit failed');
+    }
+
+    automatedChecks = data.auditResults;
+
+    console.log('External audit:', data);
+    console.log('Audit results:', automatedChecks);
+  } catch (error) {
+    console.error('Unable to run audit:', error);
+
+    auditError = error.message;
+  } finally {
+    isAuditing = false;
+
+    render();
+  }
+}
 
 function loadData() {
   const savedProject = localStorage.getItem(PROJECT_STORAGE_KEY);
@@ -90,14 +122,17 @@ function render() {
     <div class="min-h-screen bg-slate-50 text-slate-900">
 
       <div class="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-6">
+
         <!-- Main content -->
         <main class="p-6 lg:col-span-6 lg:p-8">
 
           <!-- Header -->
           <header id="overview">
+
             <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <a href="/contact"></a>
+
               <div>
+
                 <div class="flex items-center gap-3">
 
                   <h2 class="text-3xl font-bold tracking-tight">
@@ -118,6 +153,7 @@ function render() {
                 >
                   ${project.url}
                 </a>
+
               </div>
 
             </div>
@@ -196,7 +232,9 @@ function render() {
           >
 
             <div class="flex items-center justify-between">
+
               <div>
+
                 <h2 class="text-xl font-semibold">
                   Project details
                 </h2>
@@ -204,7 +242,9 @@ function render() {
                 <p class="mt-1 text-sm text-slate-500">
                   Update the project you are preparing to launch.
                 </p>
+
               </div>
+
             </div>
 
             <form
@@ -213,6 +253,7 @@ function render() {
             >
 
               <div>
+
                 <label
                   for="project-name"
                   class="mb-2 block text-sm font-medium"
@@ -226,9 +267,11 @@ function render() {
                   value="${project.name}"
                   class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 outline-none focus:border-slate-500"
                 />
+
               </div>
 
               <div>
+
                 <label
                   for="project-type"
                   class="mb-2 block text-sm font-medium"
@@ -240,6 +283,7 @@ function render() {
                   id="project-type"
                   class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 outline-none focus:border-slate-500"
                 >
+
                   <option
                     value="Lovable"
                     ${project.type === 'Lovable' ? 'selected' : ''}
@@ -260,10 +304,13 @@ function render() {
                   >
                     Other
                   </option>
+
                 </select>
+
               </div>
 
               <div>
+
                 <label
                   for="project-url"
                   class="mb-2 block text-sm font-medium"
@@ -277,16 +324,36 @@ function render() {
                   value="${project.url}"
                   class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 outline-none focus:border-slate-500"
                 />
+
               </div>
 
-              <div class="md:col-span-3">
+              <div class="flex gap-3 md:col-span-3">
+
                 <button
                   type="submit"
                   class="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
                 >
                   Save project
                 </button>
+
+                <button
+                  id="run-audit"
+                  type="button"
+                  ${isAuditing ? 'disabled' : ''}
+                  class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  ${isAuditing ? 'Running audit...' : 'Run audit'}
+                </button>
+
               </div>
+              ${auditError
+      ? `
+                    <p class="text-sm text-red-600 md:col-span-3">
+                      ${auditError}
+                    </p>
+                  `
+      : ''
+    }
 
             </form>
 
@@ -301,6 +368,7 @@ function render() {
             <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
 
               <div>
+
                 <h2 class="text-xl font-semibold">
                   Automated checks
                 </h2>
@@ -308,6 +376,7 @@ function render() {
                 <p class="mt-1 text-sm text-slate-500">
                   Technical checks that can catch common launch snags.
                 </p>
+
               </div>
 
               <p class="text-sm font-medium text-slate-600">
@@ -324,6 +393,7 @@ function render() {
                     <li class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
 
                       <div>
+
                         <p class="font-semibold">
                           ${check.name}
                         </p>
@@ -331,6 +401,7 @@ function render() {
                         <p class="mt-1 text-sm text-slate-500">
                           ${check.message}
                         </p>
+
                       </div>
 
                       <span
@@ -357,9 +428,13 @@ function render() {
           </section>
 
           <!-- Manual checklist -->
-          <section id="manual-checklist" class="mt-6">
+          <section
+            id="manual-checklist"
+            class="mt-6"
+          >
 
             <div>
+
               <h2 class="text-xl font-semibold">
                 Manual checklist
               </h2>
@@ -367,6 +442,7 @@ function render() {
               <p class="mt-1 text-sm text-slate-500">
                 Final human checks before launch.
               </p>
+
             </div>
 
             <div class="mt-4 grid gap-4 md:grid-cols-2">
@@ -470,6 +546,14 @@ function render() {
     'submit',
     handleProjectSubmit,
   );
+
+  const runAuditButton = document.querySelector(
+    '#run-audit',
+  );
+
+  runAuditButton.addEventListener('click', () => {
+    fetchAudit(project.url);
+  });
 }
 
 function handleCheckChange(event) {
@@ -513,16 +597,4 @@ function handleProjectSubmit(event) {
 }
 
 loadData();
-render();
-
-const pageData = collectPageData();
-
-automatedChecks = runPageAudit({
-  ...pageData,
-  performanceScore: 80,
-});
-
-console.log('Page data:', pageData);
-console.log('Audit results:', automatedChecks);
-
 render();

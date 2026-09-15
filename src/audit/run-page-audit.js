@@ -22,6 +22,6 @@ export function runPageAudit(page) {
     checkNoIndex(page.robots),
     checkImageAlt(page.images),
     checkEmptyLinks(page.links),
-    checkPlaceholderContent(page.text),
+    checkPlaceholderContent(page.pageText),
   ];
 }
