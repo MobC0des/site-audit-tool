@@ -4,7 +4,6 @@ export function checkPlaceholderLinks(links) {
       link.href === '#' ||
       link.href === 'javascript:void(0)' ||
       link.href === null;
-
   });
 
   if (placeholderLinks.length > 0) {

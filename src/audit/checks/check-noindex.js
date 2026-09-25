@@ -1,5 +1,7 @@
 export function checkNoIndex(robots) {
-  const noIndex = robots.includes('noindex');
+  const normalisedRobots = robots.toLowerCase();
+  const noIndex = normalisedRobots.includes('noindex');
+
   if (noIndex) {
     return {
       id: 'noindex',
