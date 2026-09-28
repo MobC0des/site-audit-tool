@@ -60,7 +60,7 @@ const server = Bun.serve({
 
       const html = await response.text();
       const pageData = collectPageData(html, response.url);
-      const auditResults = runPageAudit(pageData);
+      const auditResults = runPageAudit(pageData, response.status);
 
       const { pageText, ...publicPageData } = pageData;
 

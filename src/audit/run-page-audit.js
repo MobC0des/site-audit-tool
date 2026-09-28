@@ -1,6 +1,7 @@
 import { checkCanonical } from './checks/check-canonical.js';
 import { checkEmptyLinks } from './checks/check-empty-links.js';
 import { checkH1 } from './checks/check-h1.js';
+import { checkHttpStatus } from './checks/check-http-status.js';
 import { checkHttps } from './checks/check-https.js';
 import { checkImageAlt } from './checks/check-image-alt.js';
 import { checkNoIndex } from './checks/check-noindex.js';
@@ -11,7 +12,7 @@ import { checkTitle } from './checks/check-title.js';
 
 
 
-export function runPageAudit(page) {
+export function runPageAudit(page, httpStatus) {
   return [
     checkH1(page.headings),
     checkTitle(page.title),
@@ -23,5 +24,6 @@ export function runPageAudit(page) {
     checkImageAlt(page.images),
     checkEmptyLinks(page.links),
     checkPlaceholderContent(page.pageText),
+    checkHttpStatus(httpStatus),
   ];
 }
