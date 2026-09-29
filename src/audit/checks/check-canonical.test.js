@@ -1,7 +1,7 @@
-import { expect, test } from "vitest";
-import { checkCanonical } from "./check-canonical.js";
+import { expect, test } from 'vitest';
+import { checkCanonical } from './check-canonical.js';
 
-test("fails when canonical is missing", () => {
+test('fails when canonical is missing', () => {
   const result = checkCanonical(
     '',
     'https://example.com',
@@ -10,7 +10,7 @@ test("fails when canonical is missing", () => {
   expect(result.status).toBe("Failed");
 });
 
-test("passes when canonical matches the page URL", () => {
+test('passes when canonical matches the page URL', () => {
   const result = checkCanonical(
     'https://example.com',
     'https://example.com',
@@ -19,7 +19,7 @@ test("passes when canonical matches the page URL", () => {
   expect(result.status).toBe("Passed");
 });
 
-test("warns when canonical does not match the page URL", () => {
+test('warns when canonical does not match the page URL', () => {
   const result = checkCanonical(
     'https://example.com',
     'https://example.com/other-page',
