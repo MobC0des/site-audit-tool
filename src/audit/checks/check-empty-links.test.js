@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest";
-import { checkEmptyLinks } from "./check-empty-links";
+import { describe, expect, test } from 'vitest';
+import { checkEmptyLinks } from './check-empty-links';
 
 describe('checkEmptyLinks', () => {
   test('should return passed when no empty links are found', () => {
